@@ -30,8 +30,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SafePass()
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(16.dp)
+                    ) {
+
+                        SafePass()
+                    }
                 }
             }
         }
@@ -65,52 +76,53 @@ fun SafePass(){
         )
 
         Button(onClick = {
-            // valido el nombre y la edad
-            val edad = edadInput.toIntOrNull() // trnaformo la edad de unString a un INT
-            if(nombreInput.isBlank()){
+            val edad = edadInput.toIntOrNull()
+
+            if (nombreInput.isBlank()) {
                 estado = RegistroState.Error("Nombre es obligatorio")
-            }else{
-                edad?.let {edadvalidad ->
-                        if (!edadvalidad.validarEdad()){
-                            estado = RegistroState.Error("Usted es menor de edad")
-                        }else{
-                            val asistente = Asistente(nombreInput,edadvalidad,tipoEntradaInput).apply {}
-                            val resultado = validarPrioridad(asistente){
-                                if (it.TipoEntrada == "VIP"){
-                                    "Prioridad para el usuario ${it.nombre}"
-                                }else{
-                                    "Bienvenido ${it.nombre}"
-                                }
+            } else {
+                edad?.let { edadValida ->
 
+                    if (!edadValida.validarEdad()) {
+                        estado = RegistroState.Error("Usted es menor de edad")
+                    } else {
+                        val asistente = Asistente(nombreInput, edadValida, tipoEntradaInput.trim().uppercase())
+
+                        val resultado = validarPrioridad(asistente) {
+                            if (it.TipoEntrada == "VIP") {
+                                "Nombre: ${it.nombre}, Edad: ${it.edad}, Tipo de pase: ${it.TipoEntrada}"
+                            } else {
+                                "Nombre: ${it.nombre}, Edad: ${it.edad}, Tipo de pase: ${it.TipoEntrada}"
                             }
-
                         }
-                    estado = RegistroState.Succes("Creado correctamente")
-                    }?: {
+
+                        estado = RegistroState.Succes(resultado)
+                    }
+
+                } ?: run {
                     estado = RegistroState.Error("Edad es incorrecta")
-
                 }
-                }
-
-
-
-
-        }){ Text("Registrar")}
-
-
-    }
-    when(estado){
-
-        is RegistroState.Idle ->{
-            Text("Ingrese los datos")
-        }
-        is RegistroState.Succes -> {
-            Text((estado as RegistroState.Succes).mensaje)
+            }
+        }) {
+            Text("Registrar")
         }
 
-        is RegistroState.Error -> {
-            Text((estado as RegistroState.Error).mensaje)
+        when(estado){
+
+            is RegistroState.Idle ->{
+                Text("Ingrese los datos")
+            }
+            is RegistroState.Succes -> {
+                Text((estado as RegistroState.Succes).mensaje)
+            }
+
+            is RegistroState.Error -> {
+                Text((estado as RegistroState.Error).mensaje)
+            }
         }
+
+
+
     }
 
 

@@ -76,21 +76,27 @@ fun SafePass(){
         )
 
         Button(onClick = {
-            val edad = edadInput.toIntOrNull()
+            val edad = edadInput.trim().toIntOrNull()
 
-            if (nombreInput.isBlank()) {
-                estado = RegistroState.Error("Nombre es obligatorio")
-            } else {
+
+            if (!nombreInput.validarNombre()) {
+                estado = RegistroState.Error("El Nombre no es correcto")
+            }else if (!tipoEntradaInput.validarTipoEntrada()){
+                estado = RegistroState.Error("Tipo de entrada inválido")
+            }
+            else {
+
                 edad?.let { edadValida ->
-
                     if (!edadValida.validarEdad()) {
                         estado = RegistroState.Error("Usted es menor de edad")
                     } else {
-                        val asistente = Asistente(nombreInput, edadValida, tipoEntradaInput.trim().uppercase())
+                        val asistente = Asistente(nombreInput, edadValida, tipoEntradaInput.trim().uppercase()).apply {
+                            println("Asistente: $nombre")
+                        }
 
                         val resultado = validarPrioridad(asistente) {
                             if (it.TipoEntrada == "VIP") {
-                                "Nombre: ${it.nombre}, Edad: ${it.edad}, Tipo de pase: ${it.TipoEntrada}"
+                                "PRIORIDAD VIP\n Nombre: ${it.nombre}, Edad: ${it.edad}, Tipo: ${it.TipoEntrada} \nTiene un 20% de descuento en su entrada"
                             } else {
                                 "Nombre: ${it.nombre}, Edad: ${it.edad}, Tipo de pase: ${it.TipoEntrada}"
                             }

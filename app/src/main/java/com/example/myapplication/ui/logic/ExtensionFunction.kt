@@ -10,6 +10,15 @@ fun Int.validarEdad():Boolean{
 
     }
 
+fun String.validarNombre():Boolean {
+    return this.isNotBlank() && this.none {it.isDigit()}
+}
+
 fun validarPrioridad(asistente: Asistente, campo: (Asistente) -> String):String{
     return campo(asistente)
+}
+
+fun String.validarTipoEntrada(): Boolean {
+    val tipo = this.trim().uppercase()
+    return tipo == "VIP" || tipo == "GENERAL"
 }

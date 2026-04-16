@@ -40,13 +40,77 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SafePass(){
-    val nombreInput by remember { mutableStateOf("") }
-    val edadInput by remember { mutableStateOf(0) }
-    val tipoEntradaInput by remember { mutableStateOf("") }
+    var nombreInput by remember { mutableStateOf("") }
+    var edadInput by remember { mutableStateOf("") }
+    var tipoEntradaInput by remember { mutableStateOf("") }
+    var estado by remember { mutableStateOf<RegistroState>(RegistroState.Idle) }
 
     Column {
+        Text("Aplicacion SafePass")
+
+        TextField(
+            value = nombreInput,
+            onValueChange = { nombreInput = it },
+            label = { Text("Nombre") }
+        )
+        TextField(
+            value = edadInput,
+            onValueChange = { edadInput = it },
+            label = { Text("Edad") }
+        )
+        TextField(
+            value = tipoEntradaInput,
+            onValueChange = { tipoEntradaInput = it },
+            label = { Text("Tipo de entrada") }
+        )
+
+        Button(onClick = {
+            // valido el nombre y la edad
+            val edad = edadInput.toIntOrNull() // trnaformo la edad de unString a un INT
+            if(nombreInput.isBlank()){
+                estado = RegistroState.Error("Nombre es obligatorio")
+            }else{
+                edad?.let {edadvalidad ->
+                        if (!edadvalidad.validarEdad()){
+                            estado = RegistroState.Error("Usted es menor de edad")
+                        }else{
+                            val asistente = Asistente(nombreInput,edadvalidad,tipoEntradaInput).apply {}
+                            val resultado = validarPrioridad(asistente){
+                                if (it.TipoEntrada == "VIP"){
+                                    "Prioridad para el usuario ${it.nombre}"
+                                }else{
+                                    "Bienvenido ${it.nombre}"
+                                }
+
+                            }
+
+                        }
+                    estado = RegistroState.Succes("Creado correctamente")
+                    }?: {
+                    estado = RegistroState.Error("Edad es incorrecta")
+
+                }
+                }
 
 
+
+
+        }){ Text("Registrar")}
+
+
+    }
+    when(estado){
+
+        is RegistroState.Idle ->{
+            Text("Ingrese los datos")
+        }
+        is RegistroState.Succes -> {
+            Text((estado as RegistroState.Succes).mensaje)
+        }
+
+        is RegistroState.Error -> {
+            Text((estado as RegistroState.Error).mensaje)
+        }
     }
 
 

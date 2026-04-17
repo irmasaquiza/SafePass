@@ -3,16 +3,20 @@ import com.example.myapplication.ui.model.*
 
 fun Int.validarEdad():Boolean{
 
-    if (this < 18){
+    if (this < 18 && this < 0){
         return false
     }
     return true
 
     }
 
+fun Int.edadPositiva():Boolean = this < 0
+
+
 fun String.validarNombre():Boolean {
     return this.isNotBlank() && this.none {it.isDigit()}
 }
+
 
 fun validarPrioridad(asistente: Asistente, campo: (Asistente) -> String):String{
     return campo(asistente)

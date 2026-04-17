@@ -67,7 +67,7 @@ fun SafePass(){
                     }
 
                 } ?: run {
-                    estado = RegistroState.Error("Edad es incorrecta")
+                    estado = RegistroState.Error("Edad es obligatoria")
                 }
             }
         }) {

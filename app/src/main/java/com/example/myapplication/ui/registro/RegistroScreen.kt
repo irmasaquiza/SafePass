@@ -14,6 +14,8 @@ fun SafePass(){
     var nombreInput by remember { mutableStateOf("") }
     var edadInput by remember { mutableStateOf("") }
     var tipoEntradaInput by remember { mutableStateOf("") }
+var supervisor by remember { mutableStateOf("") }
+
     var estado by remember { mutableStateOf<RegistroState>(RegistroState.Idle) }
 
     Column {
@@ -35,9 +37,11 @@ fun SafePass(){
             label = { Text("Tipo de entrada") }
         )
 
+
+
         Button(onClick = {
             val edad = edadInput.trim().toIntOrNull()
-
+            val tipoEntry = tipoEntradaInput.trim().uppercase()
             if (!nombreInput.validarNombre()) {
                 estado = RegistroState.Error("El Nombre no es correcto")
             }else if (!tipoEntradaInput.validarTipoEntrada()){
@@ -51,7 +55,7 @@ fun SafePass(){
                     else if (!edadValida.validarEdad()) {
                         estado = RegistroState.Error("Usted es menor de edad")
                     }else {
-                        val asistente = Asistente(nombreInput, edadValida, tipoEntradaInput.trim().uppercase()).apply {
+                        val asistente = Asistente(nombreInput, edadValida,tipoEntry).apply {
                             println("Asistente: $nombre")
                         }
 
@@ -91,8 +95,6 @@ fun SafePass(){
 
 
     }
-
-
 
 
 

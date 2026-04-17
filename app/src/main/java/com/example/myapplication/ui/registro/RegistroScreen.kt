@@ -44,7 +44,6 @@ fun SafePass(){
                 estado = RegistroState.Error("Tipo de entrada inválido")
             }
             else {
-
                 edad?.let { edadValida ->
                     if (edadValida.edadPositiva()) {
                         estado = RegistroState.Error("Edad es incorrecta")
